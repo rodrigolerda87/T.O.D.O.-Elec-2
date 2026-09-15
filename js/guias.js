@@ -1135,7 +1135,7 @@ export function initCircuitInteractions(guiaId) {
     if (bGen) bGen.onclick = () => setPos(2);
   }
 
-  // 10. BOMBA FLOTANTE CON SELECTOR 3 POSICIONES
+// 10. BOMBA FLOTANTE CON SELECTOR 3 POSICIONES
   if (guiaId === 'bomba-flotante') {
     let modo = 'MAN'; // 'MAN', 'OFF', 'AUTO'
     let tanqueVacio = false;
@@ -1162,7 +1162,7 @@ export function initCircuitInteractions(guiaId) {
           rectAgua.setAttribute('height', '130');
           rectAgua.setAttribute('y', '110');
           txtTanque.textContent = 'AGUA: LLENO (BOBINA REPOSO)';
-          txtTanque.setAttribute('fill', '#fff');
+          txtTanque.setAttribute('fill', '#ffffff');
         }
       }
 
@@ -1176,11 +1176,211 @@ export function initCircuitInteractions(guiaId) {
         if (lever) { lever.setAttribute('x2', '95'); lever.setAttribute('y2', '65'); }
         if (txtModo) { txtModo.textContent = 'POSICIÓN 0: APAGADO'; txtModo.setAttribute('fill', '#94a3b8'); }
       } else if (modo === 'AUTO') {
-        motorEnMarcha = tanqueVacio; // Arranca si el tanque está vacío
+        motorEnMarcha = tanqueVacio;
         if (lever) { lever.setAttribute('x2', '125'); lever.setAttribute('y2', '75'); }
-        if (txtModo) { txtModo.textContent = 'AUTOMÁTICO POR FLOTANTE'; txtModo.setAttribute
+        if (txtModo) { txtModo.textContent = 'AUTOMÁTICO POR FLOTANTE'; txtModo.setAttribute('fill', '#38bdf8'); }
+      }
 
-                      export const CATEGORIAS_GUIA = ['Iluminación', 'Tablero y protecciones', 'Bombas de agua', 'Motores', 'Circuitos dedicados'];
+      if (motorEnMarcha) {
+        if (txtMotor) { txtMotor.textContent = 'BOMBA: EN MARCHA (BOMBEO ACTIVO)'; txtMotor.setAttribute('fill', '#22c55e'); }
+        if (cableFase) cableFase.setAttribute('stroke', '#22c55e');
+        if (spinner) spinner.setAttribute('stroke', '#22c55e');
+      } else {
+        if (txtMotor) { txtMotor.textContent = 'BOMBA: DETENIDA'; txtMotor.setAttribute('fill', '#ef4444'); }
+        if (cableFase) cableFase.setAttribute('stroke', '#475569');
+        if (spinner) spinner.setAttribute('stroke', '#475569');
+      }
+    };
+
+    const bMan = document.getElementById('btn-bomba-man');
+    const bOff = document.getElementById('btn-bomba-off');
+    const bAuto = document.getElementById('btn-bomba-auto');
+    const bAgua = document.getElementById('btn-bomba-tanque');
+
+    if (bMan) bMan.onclick = () => { modo = 'MAN'; updateBomba(); };
+    if (bOff) bOff.onclick = () => { modo = 'OFF'; updateBomba(); };
+    if (bAuto) bAuto.onclick = () => { modo = 'AUTO'; updateBomba(); };
+    if (bAgua) bAgua.onclick = () => { tanqueVacio = !tanqueVacio; updateBomba(); };
+  }
+
+  // 11. BOMBA CON PRESOSTATO
+  if (guiaId === 'bomba-presostato') {
+    let canillaAbierta = false;
+    const btn = document.getElementById('btn-canilla-presostato');
+    const agua = document.getElementById('flujo-agua');
+    const needle = document.getElementById('manometro-needle');
+    const txtBar = document.getElementById('txt-presion-bar');
+    const txtMotor = document.getElementById('txt-motor-presostato');
+    const cable = document.getElementById('cable-presostato-motor');
+    const contact = document.getElementById('contacto-presostato');
+
+    if (btn) {
+      btn.onclick = () => {
+        canillaAbierta = !canillaAbierta;
+        if (canillaAbierta) {
+          btn.textContent = 'CERRAR CANILLA';
+          if (agua) agua.setAttribute('opacity', '1');
+          if (txtBar) { txtBar.textContent = '1.2 BAR (BAJA PRESIÓN)'; txtBar.setAttribute('fill', '#f59e0b'); }
+          if (needle) { needle.setAttribute('x2', '125'); needle.setAttribute('y2', '155'); }
+          if (contact) { contact.setAttribute('x2', '80'); contact.setAttribute('y2', '160'); contact.setAttribute('stroke', '#22c55e'); }
+          if (txtMotor) { txtMotor.textContent = 'BOMBA: ENCENDIDA (COMPENSANDO)'; txtMotor.setAttribute('fill', '#22c55e'); }
+          if (cable) cable.setAttribute('stroke', '#22c55e');
+        } else {
+          btn.textContent = 'ABRIR CANILLA';
+          if (agua) agua.setAttribute('opacity', '0');
+          if (txtBar) { txtBar.textContent = '2.8 BAR (PRESIÓN MÁXIMA)'; txtBar.setAttribute('fill', '#38bdf8'); }
+          if (needle) { needle.setAttribute('x2', '155'); needle.setAttribute('y2', '135'); }
+          if (contact) { contact.setAttribute('x2', '80'); contact.setAttribute('y2', '150'); contact.setAttribute('stroke', '#94a3b8'); }
+          if (txtMotor) { txtMotor.textContent = 'BOMBA: EN ESPERA (STANDBY)'; txtMotor.setAttribute('fill', '#94a3b8'); }
+          if (cable) cable.setAttribute('stroke', '#475569');
+        }
+      };
+    }
+  }
+
+  // 12. MOTOR MONOFÁSICO MARCHA / PARADA
+  if (guiaId === 'motor-directo-mono') {
+    let marchando = false;
+    const bStart = document.getElementById('btn-motor-marcha');
+    const bStop = document.getElementById('btn-motor-parada');
+    const bobina = document.getElementById('led-bobina-km');
+    const txtKm = document.getElementById('txt-contactor-km');
+    const txtMotor = document.getElementById('txt-status-motor-mono');
+    const spin = document.getElementById('spinner-motor-mono');
+    const cable = document.getElementById('cable-km-motor');
+
+    const updateMotor = () => {
+      if (marchando) {
+        if (bobina) bobina.setAttribute('fill', '#22c55e');
+        if (txtKm) { txtKm.textContent = 'KM1 ACTIVADO (RETENCIÓN 13-14)'; txtKm.setAttribute('fill', '#22c55e'); }
+        if (txtMotor) { txtMotor.textContent = 'MOTOR GIRANDO (2900 RPM)'; txtMotor.setAttribute('fill', '#22c55e'); }
+        if (spin) spin.setAttribute('stroke', '#22c55e');
+        if (cable) cable.setAttribute('stroke', '#22c55e');
+      } else {
+        if (bobina) bobina.setAttribute('fill', '#ef4444');
+        if (txtKm) { txtKm.textContent = 'KM1 EN REPOSO (ABIERTO)'; txtKm.setAttribute('fill', '#94a3b8'); }
+        if (txtMotor) { txtMotor.textContent = 'MOTOR DETENIDO'; txtMotor.setAttribute('fill', '#ef4444'); }
+        if (spin) spin.setAttribute('stroke', '#475569');
+        if (cable) cable.setAttribute('stroke', '#475569');
+      }
+    };
+
+    if (bStart) bStart.onclick = () => { marchando = true; updateMotor(); };
+    if (bStop) bStop.onclick = () => { marchando = false; updateMotor(); };
+  }
+
+  // 13. CIRCUITO AIRE ACONDICIONADO
+  if (guiaId === 'circuito-ac') {
+    let encendido = true;
+    const btn = document.getElementById('btn-ac-toggle');
+    const txt = document.getElementById('txt-ac-status');
+    const led = document.getElementById('led-ac');
+    const cable = document.getElementById('cable-ac-potencia');
+    const display = document.getElementById('display-split-temp');
+
+    if (btn) {
+      btn.onclick = () => {
+        encendido = !encendido;
+        if (encendido) {
+          btn.textContent = 'APAGAR SPLIT';
+          if (txt) { txt.textContent = 'SPLIT: ENFRIANDO (CONSUMO 6.8 A)'; txt.setAttribute('fill', '#38bdf8'); }
+          if (led) led.setAttribute('fill', '#38bdf8');
+          if (cable) cable.setAttribute('stroke', '#38bdf8');
+          if (display) { display.textContent = '24°C'; display.setAttribute('fill', '#38bdf8'); }
+        } else {
+          btn.textContent = 'ENCENDER SPLIT';
+          if (txt) { txt.textContent = 'SPLIT: APAGADO / REPOSO'; txt.setAttribute('fill', '#94a3b8'); }
+          if (led) led.setAttribute('fill', '#ef4444');
+          if (cable) cable.setAttribute('stroke', '#475569');
+          if (display) { display.textContent = '--°C'; display.setAttribute('fill', '#64748b'); }
+        }
+      };
+    }
+  }
+
+  // 14. CIRCUITO TERMOTANQUE ELÉCTRICO
+  if (guiaId === 'circuito-termotanque') {
+    let calentando = true;
+    const btn = document.getElementById('btn-tt-toggle');
+    const txt = document.getElementById('txt-tt-status');
+    const led = document.getElementById('led-termostato');
+    const res = document.getElementById('resistencia-res');
+    const cable = document.getElementById('cable-tt-potencia');
+
+    if (btn) {
+      btn.onclick = () => {
+        calentando = !calentando;
+        if (calentando) {
+          btn.textContent = 'SIMULAR CORTE TERMOSTATO (AGUA 60°C)';
+          if (txt) { txt.textContent = 'CALENTANDO (RESISTENCIA 2000W ACTIVA)'; txt.setAttribute('fill', '#f59e0b'); }
+          if (led) led.setAttribute('fill', '#f59e0b');
+          if (res) res.setAttribute('stroke', '#f59e0b');
+          if (cable) cable.setAttribute('stroke', '#f59e0b');
+        } else {
+          btn.textContent = 'SIMULAR AGUA FRÍA (PIDE CALOR)';
+          if (txt) { txt.textContent = 'TERMOSTATO CORTÓ (AGUA A TEMPERATURA)'; txt.setAttribute('fill', '#22c55e'); }
+          if (led) led.setAttribute('fill', '#94a3b8');
+          if (res) res.setAttribute('stroke', '#475569');
+          if (cable) cable.setAttribute('stroke', '#475569');
+        }
+      };
+    }
+  }
+
+  // 15. PORTERO ELÉCTRICO
+  if (guiaId === 'portero-electrico') {
+    const btnLlamar = document.getElementById('btn-portero-ring');
+    const btnAbrir = document.getElementById('btn-portero-abrir');
+    const txt = document.getElementById('txt-portero-status');
+    const ledTimbre = document.getElementById('led-timbre-portero');
+    const pestillo = document.getElementById('pestillo-cerrojo');
+
+    if (btnLlamar) {
+      btnLlamar.onclick = () => {
+        if (txt) { txt.textContent = '¡LLAMANDO DESDE LA CALLE (RING)!'; txt.setAttribute('fill', '#f59e0b'); }
+        if (ledTimbre) ledTimbre.setAttribute('fill', '#f59e0b');
+        setTimeout(() => {
+          if (txt) { txt.textContent = 'SISTEMA EN ESPERA'; txt.setAttribute('fill', '#94a3b8'); }
+          if (ledTimbre) ledTimbre.setAttribute('fill', '#94a3b8');
+        }, 1500);
+      };
+    }
+
+    if (btnAbrir) {
+      btnAbrir.onclick = () => {
+        if (txt) { txt.textContent = 'CERRADURA 12V DESTRABADA (PASAR)'; txt.setAttribute('fill', '#22c55e'); }
+        if (pestillo) { pestillo.setAttribute('x', '165'); pestillo.setAttribute('fill', '#22c55e'); }
+        setTimeout(() => {
+          if (txt) { txt.textContent = 'PUERTA TRABADA'; txt.setAttribute('fill', '#94a3b8'); }
+          if (pestillo) { pestillo.setAttribute('x', '180'); pestillo.setAttribute('fill', '#e2e8f0'); }
+        }, 1800);
+      };
+    }
+  }
+
+  // 16. TIMBRE DING-DONG
+  if (guiaId === 'timbre') {
+    const btn = document.getElementById('btn-timbre-sonar');
+    const txt = document.getElementById('txt-timbre-status');
+    const martillo = document.getElementById('martillo-timbre');
+    const campana = document.getElementById('campana-gong');
+
+    if (btn) {
+      btn.onclick = () => {
+        if (txt) { txt.textContent = '¡¡ DING - DONG !!'; txt.setAttribute('fill', '#facc15'); }
+        if (martillo) martillo.setAttribute('x2', '160');
+        if (campana) campana.setAttribute('fill', '#facc15');
+        setTimeout(() => {
+          if (txt) { txt.textContent = 'ESPERANDO PULSACIÓN'; txt.setAttribute('fill', '#94a3b8'); }
+          if (martillo) martillo.setAttribute('x2', '140');
+          if (campana) campana.setAttribute('fill', '#d97706');
+        }, 800);
+      };
+    }
+  }
+}
+
+export const CATEGORIAS_GUIA = ['Iluminación', 'Tablero y protecciones', 'Bombas de agua', 'Motores', 'Circuitos dedicados'];
 
 export const GUIAS = [
   // --- Iluminación ---
@@ -1357,4 +1557,5 @@ export const GUIAS = [
 
 export function getGuia(id) {
   return GUIAS.find(g => g.id === id) || null;
+}
 }
