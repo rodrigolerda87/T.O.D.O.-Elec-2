@@ -19,7 +19,7 @@ import {
   calcularPotenciaSimultaneidad, CARGAS_TIPICAS,
   APLICACIONES_DIFERENCIAL,
 } from './calculos.js';
-import { GUIAS, CATEGORIAS_GUIA, getGuia, renderCircuitDiagramSvg } from './guias.js';
+import { GUIAS, CATEGORIAS_GUIA, getGuia, renderCircuitDiagramSvg, initCircuitInteractions } from './guias.js';
 
 // ---------------------------------------------------------------------
 // Estado
