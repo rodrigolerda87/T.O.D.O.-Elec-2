@@ -1558,4 +1558,3 @@ export const GUIAS = [
 export function getGuia(id) {
   return GUIAS.find(g => g.id === id) || null;
 }
-}
