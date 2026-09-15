@@ -1729,31 +1729,56 @@ function renderGuiaDetalle() {
   const el = document.getElementById('view-guia-detalle');
   const guia = getGuia(state.guiaActualId) || GUIAS[0];
   el.innerHTML = `
-    <button class="btn btn-ghost btn-sm" id="btn-back-guias">← Guías</button>
+    <button class="btn btn-ghost btn-sm" id="btn-back-guias">← Volver a Guías</button>
     <div class="page-head" style="margin-top:8px;">
       <div>
         <h1 class="page-title">${esc(guia.nombre)}</h1>
-        <p class="page-sub">${esc(guia.categoria)} · ${esc(guia.nivel)}</p>
+        <p class="page-sub">${esc(guia.categoria)} · Nivel ${esc(guia.nivel)}</p>
       </div>
     </div>
-    <div class="card" style="padding: 10px; background: #0d1522; border-radius: 14px;">
-  ${renderCircuitDiagramSvg(guia.diagrama, guia.id)}
-</div>
+    
+    <!-- CONTENEDOR DEL CIRCUITO INTERACTIVO -->
+    <div class="card" style="padding: 12px; background: #0b1420; border-radius: 14px; border: 1px solid #1e293b;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #f59e0b; font-family: monospace; letter-spacing: 0.5px;">
+          ⚡ CIRCUITO INTERACTIVO EN VIVO (IRAM 2183)
+        </span>
+        <span style="font-size: 10px; color: #94a3b8; background: #1e293b; padding: 2px 8px; border-radius: 6px;">
+          Toca las llaves para simular
+        </span>
+      </div>
+      <div id="circuito-container" style="width: 100%; overflow-x: auto;">
+        ${renderCircuitDiagramSvg(guia.diagrama, guia.id)}
+      </div>
+    </div>
+
+    <!-- MATERIALES -->
     <div class="card">
-      <div class="card-title">Materiales</div>
+      <div class="card-title">Materiales Normalizados Requeridos</div>
       <ul style="font-size:14px;color:var(--text-dim);line-height:1.9;margin:0;padding-left:20px;">
         ${guia.materiales.map(m => `<li>${esc(m)}</li>`).join('')}
       </ul>
     </div>
+
+    <!-- PASO A PASO -->
     <div class="card">
-      <div class="card-title">Paso a paso</div>
+      <div class="card-title">Paso a paso de Instalación Segura</div>
       <ol style="font-size:14px;color:var(--text-dim);line-height:1.9;margin:0;padding-left:20px;">
         ${guia.pasos.map(p => `<li>${esc(p)}</li>`).join('')}
       </ol>
     </div>
-    <p class="hint" style="margin-bottom:30px;">Guía orientativa de referencia rápida. Adaptá según la norma AEA 90364 y las condiciones reales de la instalación.</p>
+
+    <p class="hint" style="margin-bottom:30px;">
+      Norma obligatoria AEA 90364. Código de colores: Fase (Marrón), Neutro (Celeste), Puesta a tierra (Verde/Amarillo).
+    </p>
   `;
+
   document.getElementById('btn-back-guias').onclick = () => showView('guias');
+
+  // Activar la interactividad de los interruptores y controles
+  if (typeof initCircuitInteractions === 'function') {
+    initCircuitInteractions(guia.id);
+  }
 }
 
 // ---------------------------------------------------------------------
