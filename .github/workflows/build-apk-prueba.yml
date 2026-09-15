@@ -20,9 +20,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # NOTA: ubuntu-latest ya incluye el SDK de Android y ANDROID_HOME preinstalados.
-      # No se requiere android-actions/setup-android.
-
       - name: Configurar Gradle 8.9
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -36,6 +33,7 @@ jobs:
         with:
           name: pilo-presupuestos-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
