@@ -7,7 +7,10 @@
 const NODE_COLOR = { fuente: '#8b93a1', control: '#3b82f6', carga: '#f5765c', proteccion: '#8b93a1' };
 const NODE_BG = { fuente: 'rgba(139,147,161,0.14)', control: 'rgba(59,130,246,0.14)', carga: 'rgba(245,118,92,0.14)', proteccion: 'rgba(139,147,161,0.14)' };
 
-export function renderCircuitDiagramSvg(nodes) {
+// =====================================================================
+// DEFINICIONES SVG GLOBALES (Filtros y Rayado IRAM Verde/Amarillo)
+// =====================================================================
+function renderFallbackBoxes(nodes) {
   const W = 360;
   const boxH = 50, gap = 34;
   const totalH = nodes.length * boxH + (nodes.length - 1) * gap + 24;
@@ -31,8 +34,141 @@ export function renderCircuitDiagramSvg(nodes) {
   return `<svg viewBox="0 0 ${W} ${totalH}" width="100%" role="img" style="display:block;">${parts.join('')}</svg>`;
 }
 
-function escXml(s) {
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const SVG_DEFS = `
+  <defs>
+    <filter id="din-shadow" x="-8%" y="-8%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.5" />
+    </filter>
+    <pattern id="cable-pe-stripes" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#16a34a" stroke-width="6" />
+      <line x1="5" y1="0" x2="5" y2="10" stroke="#eab308" stroke-width="4" />
+    </pattern>
+    <radialGradient id="lamp-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="1" />
+      <stop offset="60%" stop-color="#facc15" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#eab308" stop-opacity="0.2" />
+    </radialGradient>
+  </defs>
+`;
+
+// 1. PUNTO SIMPLE
+function svgPuntoSimple() {
+  return `
+  <svg viewBox="0 0 900 480" width="100%" style="display:block;background:#0d1522;border-radius:12px;" role="img">
+    ${SVG_DEFS}
+    <text x="450" y="32" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="bold" font-family="sans-serif">CIRCUITO 1: PUNTO DE LUZ SIMPLE (INTERRUPCIÓN EN FASE)</text>
+    <text x="450" y="52" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="sans-serif">Norma AEA 90364 · Sección mínima iluminación 1,5 mm²</text>
+
+    <!-- CAJA OCTOGONAL DE TECHO -->
+    <g transform="translate(60, 90)" filter="url(#din-shadow)">
+      <polygon points="50,0 150,0 200,50 200,150 150,200 50,200 0,150 0,50" fill="#1e293b" stroke="#475569" stroke-width="2.5" />
+      <text x="100" y="32" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="bold">CAJA OCTOGONAL</text>
+      <circle cx="50" cy="80" r="7" fill="#8b4513" stroke="#fff" stroke-width="1.5" />
+      <text x="50" y="70" text-anchor="middle" fill="#f59e0b" font-size="9">FASE (L)</text>
+      <circle cx="100" cy="80" r="7" fill="#0284c7" stroke="#fff" stroke-width="1.5" />
+      <text x="100" y="70" text-anchor="middle" fill="#38bdf8" font-size="9">NEUTRO (N)</text>
+      <circle cx="150" cy="80" r="7" fill="url(#cable-pe-stripes)" stroke="#fff" stroke-width="1.5" />
+      <text x="150" y="70" text-anchor="middle" fill="#4ade80" font-size="9">TIERRA (PE)</text>
+    </g>
+
+    <!-- LLAVE UNIPOLAR -->
+    <g transform="translate(180, 260)" filter="url(#din-shadow)">
+      <rect x="0" y="0" width="160" height="150" rx="10" fill="#1e293b" stroke="#475569" stroke-width="2" />
+      <rect x="15" y="15" width="130" height="120" rx="6" fill="#0f172a" />
+      <text x="80" y="38" text-anchor="middle" fill="#f8fafc" font-size="11" font-weight="bold">LLAVE UNIPOLAR</text>
+      <circle cx="45" cy="90" r="6" fill="#8b4513" stroke="#fff" stroke-width="1.5" />
+      <text x="45" y="112" text-anchor="middle" fill="#f59e0b" font-size="9">Borne L (Fase)</text>
+      <circle cx="115" cy="90" r="6" fill="#334155" stroke="#fff" stroke-width="1.5" />
+      <text x="115" y="112" text-anchor="middle" fill="#94a3b8" font-size="9">Borne 1 (Ret.)</text>
+    </g>
+
+    <!-- PORTALÁMPARAS E27 -->
+    <g transform="translate(580, 110)" filter="url(#din-shadow)">
+      <circle cx="110" cy="110" r="85" fill="#1e293b" stroke="#475569" stroke-width="2" />
+      <circle cx="110" cy="110" r="60" fill="url(#lamp-glow)" stroke="#eab308" stroke-width="2" />
+      <circle cx="85" cy="110" r="7" fill="#0284c7" stroke="#fff" stroke-width="1.5" />
+      <text x="85" y="130" text-anchor="middle" fill="#0284c7" font-size="8" font-weight="bold">ROSCA (N)</text>
+      <circle cx="135" cy="110" r="7" fill="#0f172a" stroke="#fff" stroke-width="1.5" />
+      <text x="135" y="130" text-anchor="middle" fill="#f8fafc" font-size="8" font-weight="bold">CENTRO (RET)</text>
+      <text x="110" y="195" text-anchor="middle" fill="#f8fafc" font-size="11" font-weight="bold">LÁMPARA E27</text>
+    </g>
+
+    <!-- CONDUCTORES SEGÚN NORMA IRAM 2183 -->
+    <path d="M 110 170 L 110 350 L 225 350" stroke="#8b4513" stroke-width="4.5" fill="none" />
+    <path d="M 295 350 L 715 350 L 715 117" stroke="#334155" stroke-width="4.5" fill="none" />
+    <path d="M 160 170 L 665 170 L 665 117" stroke="#0284c7" stroke-width="4.5" fill="none" />
+    <path d="M 210 170 L 760 170 L 760 180" stroke="url(#cable-pe-stripes)" stroke-width="4" fill="none" />
+
+    <g transform="translate(60, 430)">
+      <rect x="0" y="0" width="780" height="34" rx="6" fill="#1e293b" stroke="#eab308" stroke-width="1" />
+      <text x="15" y="21" fill="#facc15" font-size="10" font-weight="bold">REGLA DE ORO:</text>
+      <text x="120" y="21" fill="#cbd5e1" font-size="10">La fase (marrón) SIEMPRE debe ser interrumpida por la llave; el neutro (celeste) NUNCA se conecta al interruptor.</text>
+    </g>
+  </svg>`;
+}
+
+// 2. CONMUTADA (2 PUNTOS)
+function svgConmutada() {
+  return `
+  <svg viewBox="0 0 940 480" width="100%" style="display:block;background:#0d1522;border-radius:12px;" role="img">
+    ${SVG_DEFS}
+    <text x="470" y="32" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="bold" font-family="sans-serif">CIRCUITO 2: LLAVE DE COMBINACIÓN (2 PUNTOS / ESCALERA)</text>
+
+    <!-- Conmutada 1 -->
+    <g transform="translate(60, 120)" filter="url(#din-shadow)">
+      <rect width="170" height="220" rx="10" fill="#1e293b" stroke="#475569" stroke-width="2" />
+      <text x="85" y="35" text-anchor="middle" fill="#f8fafc" font-size="12" font-weight="bold">CONMUTADA 1</text>
+      <circle cx="85" cy="70" r="7" fill="#8b4513" stroke="#fff" stroke-width="1.5" />
+      <text x="85" y="92" text-anchor="middle" fill="#f59e0b" font-size="9">Común C (Fase)</text>
+      <circle cx="45" cy="170" r="7" fill="#8b5cf6" stroke="#fff" stroke-width="1.5" />
+      <text x="45" y="195" text-anchor="middle" fill="#a78bfa" font-size="9">Borne 1 (Viaj. 1)</text>
+      <circle cx="125" cy="170" r="7" fill="#f97316" stroke="#fff" stroke-width="1.5" />
+      <text x="125" y="195" text-anchor="middle" fill="#fb923c" font-size="9">Borne 2 (Viaj. 2)</text>
+    </g>
+
+    <!-- Conmutada 2 -->
+    <g transform="translate(390, 120)" filter="url(#din-shadow)">
+      <rect width="170" height="220" rx="10" fill="#1e293b" stroke="#475569" stroke-width="2" />
+      <text x="85" y="35" text-anchor="middle" fill="#f8fafc" font-size="12" font-weight="bold">CONMUTADA 2</text>
+      <circle cx="45" cy="70" r="7" fill="#8b5cf6" stroke="#fff" stroke-width="1.5" />
+      <text x="45" y="92" text-anchor="middle" fill="#a78bfa" font-size="9">Borne 1 (Viaj. 1)</text>
+      <circle cx="125" cy="70" r="7" fill="#f97316" stroke="#fff" stroke-width="1.5" />
+      <text x="125" y="92" text-anchor="middle" fill="#fb923c" font-size="9">Borne 2 (Viaj. 2)</text>
+      <circle cx="85" cy="170" r="7" fill="#0f172a" stroke="#fff" stroke-width="1.5" />
+      <text x="85" y="195" text-anchor="middle" fill="#cbd5e1" font-size="9">Común C (Retorno)</text>
+    </g>
+
+    <!-- Lámpara -->
+    <g transform="translate(710, 120)" filter="url(#din-shadow)">
+      <circle cx="95" cy="110" r="75" fill="#1e293b" stroke="#475569" stroke-width="2" />
+      <circle cx="95" cy="110" r="50" fill="url(#lamp-glow)" stroke="#eab308" stroke-width="2" />
+      <circle cx="70" cy="110" r="6" fill="#0284c7" stroke="#fff" stroke-width="1.5" />
+      <text x="70" y="130" text-anchor="middle" fill="#0284c7" font-size="8">N</text>
+      <circle cx="120" cy="110" r="6" fill="#0f172a" stroke="#fff" stroke-width="1.5" />
+      <text x="120" y="130" text-anchor="middle" fill="#fff" font-size="8">RET</text>
+    </g>
+
+    <!-- Cables -->
+    <path d="M 20 190 L 145 190" stroke="#8b4513" stroke-width="4.5" fill="none" />
+    <path d="M 105 290 L 105 380 L 435 380 L 435 190" stroke="#8b5cf6" stroke-width="4" fill="none" />
+    <path d="M 185 290 L 185 410 L 515 410 L 515 190" stroke="#f97316" stroke-width="4" fill="none" />
+    <path d="M 475 290 L 830 290 L 830 116" stroke="#0f172a" stroke-width="4.5" fill="none" />
+    <path d="M 20 80 L 780 80 L 780 116" stroke="#0284c7" stroke-width="4.5" fill="none" />
+  </svg>`;
+}
+
+// Mapa de los 10 ítems
+const DETAILED_DIAGRAMS = {
+  'punto-simple': svgPuntoSimple,
+  'conmutada': svgConmutada,
+};
+
+export function renderCircuitDiagramSvg(nodes, guiaId) {
+  if (guiaId && DETAILED_DIAGRAMS[guiaId]) {
+    return DETAILED_DIAGRAMS[guiaId]();
+  }
+  // Si no está registrado, mantiene el generador por cajas original
+  return renderFallbackBoxes(nodes);
 }
 
 export const CATEGORIAS_GUIA = ['Iluminación', 'Tablero y protecciones', 'Bombas de agua', 'Motores', 'Circuitos dedicados'];
