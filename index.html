@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>T.O.D.O. — para un electricista</title>
+<meta name="description" content="Presupuestos, cálculos y guías para instalaciones eléctricas, con los costos sugeridos de AAIERIC">
+<meta name="theme-color" content="#0b1420">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- Desktop sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-wordmark"><span class="brand-name-text">T.O.D.O.</span> <span class="brand-slogan-inline">para Electricistas</span></div>
+    </div>
+
+    <div class="nav-item active" data-view="home">
+      <img class="nav-icon" src="./assets/branding/nav-inicio.png" alt="">
+      Inicio
+    </div>
+    <div class="nav-item" data-view="presupuestos">
+      <img class="nav-icon" src="./assets/branding/nav-presupuesto.png" alt="">
+      Presupuestos
+    </div>
+    <div class="nav-item" data-view="calculos">
+      <img class="nav-icon" src="./assets/branding/nav-calculos.png" alt="">
+      Cálculos
+    </div>
+    <div class="nav-item" data-view="negocio">
+      <img class="nav-icon" src="./assets/branding/nav-mi-negocio.png" alt="">
+      Mi Negocio
+    </div>
+    <div class="nav-item" data-view="guias">
+      <img class="nav-icon" src="./assets/branding/nav-guias.png" alt="">
+      Guías
+    </div>
+
+    <div class="nav-spacer"></div>
+    <div class="nav-foot" id="sidebar-foot">Precios AAIERIC · Jul 2026</div>
+  </aside>
+
+  <!-- Mobile topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-wordmark"><span class="brand-name-text">T.O.D.O.</span> <span class="brand-slogan-inline">para Electricistas</span></div>
+    </div>
+  </div>
+
+  <main class="main">
+
+    <div id="update-banner"></div>
+
+    <!-- VIEW: Inicio -->
+    <section class="view active" id="view-home"></section>
+
+    <!-- VIEW: Nuevo presupuesto -->
+    <section class="view" id="view-builder"></section>
+
+    <!-- VIEW: Presupuestos guardados -->
+    <section class="view" id="view-quotes"></section>
+
+    <!-- VIEW: Clientes -->
+    <section class="view" id="view-clients"></section>
+
+    <!-- VIEW: Precios AAIERIC -->
+    <section class="view" id="view-catalog"></section>
+
+    <!-- VIEW: Mi negocio -->
+    <section class="view" id="view-business"></section>
+
+    <!-- VIEW: Cálculos · Caída de Tensión -->
+    <section class="view" id="view-calc-caida"></section>
+
+    <!-- VIEW: Cálculos · Grado de Electrificación y Circuitos -->
+    <section class="view" id="view-calc-electrif"></section>
+
+    <!-- VIEW: Cálculos · Ampacidad del cable -->
+    <section class="view" id="view-calc-ampacidad"></section>
+
+    <!-- VIEW: Cálculos · Diámetro de caño -->
+    <section class="view" id="view-calc-cano"></section>
+
+    <!-- VIEW: Cálculos · Puesta a tierra -->
+    <section class="view" id="view-calc-tierra"></section>
+
+    <!-- VIEW: Cálculos · Contactor/térmica para motores -->
+    <section class="view" id="view-calc-motor"></section>
+
+    <!-- VIEW: Cálculos · Potencia total y factor de simultaneidad -->
+    <section class="view" id="view-calc-potencia"></section>
+
+    <!-- VIEW: Cálculos · Sensibilidad de diferencial -->
+    <section class="view" id="view-calc-diferencial"></section>
+
+    <!-- VIEW: Guías (lista) -->
+    <section class="view" id="view-guias"></section>
+
+    <!-- VIEW: Guías (detalle de una guía) -->
+    <section class="view" id="view-guia-detalle"></section>
+
+  </main>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-nav">
+  <div class="nav-item active" data-view="home">
+    <img class="nav-icon" src="./assets/branding/nav-inicio.png" alt="">
+    Inicio
+  </div>
+  <div class="nav-item" data-view="presupuestos">
+    <img class="nav-icon" src="./assets/branding/nav-presupuesto.png" alt="">
+    Presup.
+  </div>
+  <div class="nav-item" data-view="calculos">
+    <img class="nav-icon" src="./assets/branding/nav-calculos.png" alt="">
+    Cálculos
+  </div>
+  <div class="nav-item" data-view="negocio">
+    <img class="nav-icon" src="./assets/branding/nav-mi-negocio.png" alt="">
+    Negocio
+  </div>
+  <div class="nav-item" data-view="guias">
+    <img class="nav-icon" src="./assets/branding/nav-guias.png" alt="">
+    Guías
+  </div>
+</nav>
+
+<div id="toast-host"></div>
+<div id="modal-host"></div>
+
+<script src="./vendor/jspdf.umd.min.js"></script>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
