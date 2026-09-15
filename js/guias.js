@@ -1179,3 +1179,182 @@ export function initCircuitInteractions(guiaId) {
         motorEnMarcha = tanqueVacio; // Arranca si el tanque está vacío
         if (lever) { lever.setAttribute('x2', '125'); lever.setAttribute('y2', '75'); }
         if (txtModo) { txtModo.textContent = 'AUTOMÁTICO POR FLOTANTE'; txtModo.setAttribute
+
+                      export const CATEGORIAS_GUIA = ['Iluminación', 'Tablero y protecciones', 'Bombas de agua', 'Motores', 'Circuitos dedicados'];
+
+export const GUIAS = [
+  // --- Iluminación ---
+  {
+    id: 'punto-simple', categoria: 'Iluminación', nombre: 'Punto de luz simple', nivel: 'Básico',
+    diagrama: [{ t: 'Llave de un punto', k: 'control' }, { t: 'Lámpara', k: 'carga' }],
+    materiales: ['Llave de un punto 10A', 'Cable 1,5 mm² IRAM 2183 (Fase marrón, Neutro celeste, Retorno negro)', 'Portalámparas E27', 'Caja rectangular y octogonal'],
+    pasos: [
+      'Llevar fase (marrón) al borne central L de la llave.',
+      'Del borne 1 de la llave, salir con retorno (negro) hacia el centro del portalámparas.',
+      'El neutro (celeste) se conecta directo a la rosca del portalámparas sin pasar por la llave.',
+      'La puesta a tierra (verde/amarillo) se fija a la chapa de la luminaria y caja.'
+    ],
+  },
+  {
+    id: 'conmutada', categoria: 'Iluminación', nombre: 'Conmutada (2 puntos / escalera)', nivel: 'Básico',
+    diagrama: [{ t: 'Llave conmutada 1', k: 'control' }, { t: 'Llave conmutada 2', k: 'control' }, { t: 'Lámpara', k: 'carga' }],
+    materiales: ['2 llaves de combinación (3 bornes)', 'Cable 1,5 mm²', 'Cables puente/viajeros (violeta y naranja)', 'Portalámparas E27'],
+    pasos: [
+      'Conectar la fase (marrón) al borne común (C) de la primera conmutada.',
+      'Tirar dos cables viajeros entre los bornes 1 y 2 de ambas llaves.',
+      'Desde el borne común (C) de la segunda llave salir con el retorno hacia la lámpara.',
+      'Neutro directo a la lámpara.'
+    ],
+  },
+  {
+    id: 'cruzamiento', categoria: 'Iluminación', nombre: 'Combinada / cruzamiento (3+ puntos)', nivel: 'Intermedio',
+    diagrama: [{ t: 'Conmutada A', k: 'control' }, { t: 'Cruzamiento (4 vías)', k: 'control' }, { t: 'Conmutada B', k: 'control' }, { t: 'Lámpara', k: 'carga' }],
+    materiales: ['2 llaves conmutadas de 3 bornes', '1 llave de cruzamiento de 4 bornes', 'Cable 1,5 mm²'],
+    pasos: [
+      'Los dos extremos de la habitación llevan llaves conmutadas comunes.',
+      'En el medio se intercalan una o más llaves de 4 vías cruzando los dos viajeros.',
+      'Cualquier llave, desde cualquier punto, prende o apaga la luz.'
+    ],
+  },
+  {
+    id: 'escalera-automatica', categoria: 'Iluminación', nombre: 'Escalera automática (temporizador DIN)', nivel: 'Intermedio',
+    diagrama: [{ t: 'Pulsadores', k: 'control' }, { t: 'Temporizador DIN', k: 'control' }, { t: 'Luces pasillo', k: 'carga' }],
+    materiales: ['Temporizador de escalera para riel DIN', 'Pulsadores NA (uno por piso)', 'Cable 1,5 mm²'],
+    pasos: [
+      'Conectar todos los pulsadores en paralelo a la entrada de mando del temporizador.',
+      'El temporizador alimenta la fase de las lámparas durante el tiempo prefijado (ej. 1 a 3 minutos).',
+      'Pasado el tiempo, el contacto abre automáticamente apagando las luces.'
+    ],
+  },
+  {
+    id: 'fotocelula', categoria: 'Iluminación', nombre: 'Encendido con fotocélula crepuscular', nivel: 'Básico',
+    diagrama: [{ t: 'Fotocélula 3 cables', k: 'control' }, { t: 'Luminarias exteriores', k: 'carga' }],
+    materiales: ['Fotocélula electrónica (Fase, Neutro, Carga)', 'Cable 1,5 mm²', 'Contactor si la carga supera 1000W'],
+    pasos: [
+      'Ubicar la fotocélula orientada al sur/cielo, lejos de la propia luz artificial que comanda para evitar parpadeos.',
+      'Conectar la fase (marrón) y el neutro (celeste) para alimentar el circuito interno del sensor.',
+      'El cable rojo (carga) va directo a las luminarias exteriores.'
+    ],
+  },
+  {
+    id: 'dimmer', categoria: 'Iluminación', nombre: 'Dimmer (regulador de intensidad)', nivel: 'Básico',
+    diagrama: [{ t: 'Dimmer electrónico', k: 'control' }, { t: 'Lámparas dimerizables', k: 'carga' }],
+    materiales: ['Módulo dimmer rotativo', 'Lámparas LED rotuladas como "Dimmable"', 'Cable 1,5 mm²'],
+    pasos: [
+      'El dimmer se conecta en serie con la fase exactamente igual que una llave de un punto.',
+      'Verificar que las lámparas LED instaladas admitan regulación electrónica (no apto para LEDs convencionales).'
+    ],
+  },
+
+  // --- Tablero y protecciones ---
+  {
+    id: 'tablero-unifilar', categoria: 'Tablero y protecciones', nombre: 'Esquema unifilar de tablero principal', nivel: 'Intermedio',
+    diagrama: [{ t: 'IGA Bipolar', k: 'proteccion' }, { t: 'Diferencial ID', k: 'proteccion' }, { t: 'Térmicas seccionales', k: 'proteccion' }],
+    materiales: ['Termomagnética general IGA (Curva C)', 'Disyuntor diferencial 30mA (IRAM 2301)', 'Peines de conexión bifásicos'],
+    pasos: [
+      'Aguas arriba siempre entra la acometida al Interruptor General Automático (IGA).',
+      'De la salida del IGA se alimenta la entrada del Disyuntor Diferencial de 30mA.',
+      'De la salida del diferencial se distribuye mediante peine bifásico hacia los pequeños interruptores automáticos (PIA) de cada circuito.'
+    ],
+  },
+  {
+    id: 'jabalina-tablero', categoria: 'Tablero y protecciones', nombre: 'Puesta a tierra — conexión al tablero', nivel: 'Intermedio',
+    diagrama: [{ t: 'Jabalina en tierra', k: 'fuente' }, { t: 'Cable PE 4mm²', k: 'proteccion' }, { t: 'Barra colectora', k: 'proteccion' }],
+    materiales: ['Jabalina cobreada de 1,5m x 1/2"', 'Tomacable/morseto bronce', 'Cámara de inspección 15x15', 'Cable PE verde/amarillo 4 o 10 mm²'],
+    pasos: [
+      'Hincar la jabalina en suelo húmedo dentro de la cámara de inspección.',
+      'Apretar el tomacable con el conductor de protección (PE) sin empalmes hasta la barra de tierra del tablero principal.',
+      'Verificar que la resistencia sea menor a 10 Ohms con telurímetro según AEA 90364.'
+    ],
+  },
+  {
+    id: 'transferencia-manual', categoria: 'Tablero y protecciones', nombre: 'Tablero de transferencia manual (grupo electrógeno)', nivel: 'Avanzado',
+    diagrama: [{ t: 'Red Comercial', k: 'fuente' }, { t: 'Conmutadora 1-0-2', k: 'control' }, { t: 'Generador', k: 'fuente' }, { t: 'Cargas prioritarias', k: 'carga' }],
+    materiales: ['Conmutadora rotativa tetrapolar o bipolar 1-0-2', 'Ficha macho de acople generador', 'Gabinete estanco'],
+    pasos: [
+      'Posición 1 conecta exclusivamente la red de la distribuidora.',
+      'Posición 0 garantiza corte y apertura física completa de fase y neutro.',
+      'Posición 2 conecta la entrada del grupo electrógeno. Es imposible alimentar la red pública por error.'
+    ],
+  },
+
+  // --- Bombas de agua ---
+  {
+    id: 'bomba-flotante', categoria: 'Bombas de agua', nombre: 'Bomba con flotante y selector M-0-A', nivel: 'Intermedio',
+    diagrama: [{ t: 'Selector M-0-A', k: 'control' }, { t: 'Flotante hermético 24V', k: 'control' }, { t: 'Contactor + Rele', k: 'control' }, { t: 'Bomba de agua', k: 'carga' }],
+    materiales: ['Selector 3 posiciones 1-0-2', 'Flotante hermético tipo pera', 'Transformador 24V / Relé de seguridad', 'Electrobomba monofásica'],
+    pasos: [
+      'Por seguridad (AEA), el flotante del tanque NUNCA debe manejar 220V: debe operar en 24V a través de un relé auxiliar.',
+      'Modo Manual: energiza la bobina del contactor directamente sin importar el agua.',
+      'Modo 0: corta completamente el circuito de comando.',
+      'Modo Automático: la bomba enciende solo cuando el flotante cae por falta de agua en el tanque.'
+    ],
+  },
+  {
+    id: 'bomba-presostato', categoria: 'Bombas de agua', nombre: 'Bomba con presostato (presurizadora)', nivel: 'Intermedio',
+    diagrama: [{ t: 'Presostato electromecánico', k: 'control' }, { t: 'Vaso de expansión', k: 'carga' }, { t: 'Electrobomba', k: 'carga' }],
+    materiales: ['Presostato calibrable (1.5 - 2.8 bar)', 'Manómetro de glicerina', 'Vaso de expansión con membrana', 'Válvula de retención'],
+    pasos: [
+      'Al abrir una canilla cae la presión hidráulica en la cañería.',
+      'El diafragma del presostato detecta la baja presión y cierra su contacto alimentando la bomba.',
+      'Al cerrar la canilla, la bomba sigue andando unos segundos hasta que la línea recupera 2.8 bar y corta.'
+    ],
+  },
+
+  // --- Motores ---
+  {
+    id: 'motor-directo-mono', categoria: 'Motores', nombre: 'Arranque directo de motor monofásico', nivel: 'Básico',
+    diagrama: [{ t: 'Guardamotor / Térmica', k: 'proteccion' }, { t: 'Contactor bipolar', k: 'control' }, { t: 'Botonera Marcha/Parada', k: 'control' }, { t: 'Motor monofásico', k: 'carga' }],
+    materiales: ['Guardamotor magnetotérmico regulado a la corriente nominal In', 'Contactor bipolar 220V (AC-3)', 'Pulsadores verde (NA) y rojo (NC)'],
+    pasos: [
+      'El circuito de potencia sale del guardamotor pasando por los bornes 1-L1 y 3-L2 del contactor hacia el motor.',
+      'El pulsador de marcha cierra el circuito de la bobina A1-A2 y se auto-retiene mediante el contacto auxiliar NA (13-14).',
+      'El pulsador de parada abre el circuito despegando el contactor.'
+    ],
+  },
+
+  // --- Circuitos dedicados ---
+  {
+    id: 'circuito-ac', categoria: 'Circuitos dedicados', nombre: 'Circuito dedicado para aire acondicionado', nivel: 'Básico',
+    diagrama: [{ t: 'Térmica C20 en tablero', k: 'proteccion' }, { t: 'Cable 2,5 mm²', k: 'fuente' }, { t: 'Tomacorriente 20A', k: 'control' }, { t: 'Equipo Split', k: 'carga' }],
+    materiales: ['Termomagnética C16 o C20 exclusiva', 'Cable 2,5 mm² IRAM 2183', 'Tomacorriente de 20A de espigas gruesas IRAM 2071'],
+    pasos: [
+      'La norma AEA exige circuito independiente (TUE) sin compartir tomas comunes.',
+      'El enchufe de 20A tiene espigas más gruesas para evitar sobrecalentamientos por corriente de arranque del compresor.',
+      'Conexión obligatoria de puesta a tierra al borne central.'
+    ],
+  },
+  {
+    id: 'circuito-termotanque', categoria: 'Circuitos dedicados', nombre: 'Circuito dedicado para termotanque eléctrico', nivel: 'Básico',
+    diagrama: [{ t: 'Térmica C16', k: 'proteccion' }, { t: 'Termostato bimetálico', k: 'control' }, { t: 'Resistencia 2000W', k: 'carga' }],
+    materiales: ['Termomagnética C16 bipolar', 'Cable 2,5 mm²', 'Termostato de varilla con corte de seguridad', 'Toma 10A o 20A de alta calidad'],
+    pasos: [
+      'Circuito exclusivo desde el tablero con cable de 2,5 mm².',
+      'El termostato bimetálico corta el paso de fase cuando el agua alcanza la temperatura seteada (ej. 60°C).',
+      'La puesta a tierra es crítica: se conecta al chasis metálico del termotanque para que el disyuntor salte si la resistencia se fisura.'
+    ],
+  },
+  {
+    id: 'portero-electrico', categoria: 'Circuitos dedicados', nombre: 'Portero eléctrico con apertura de cerradura', nivel: 'Básico',
+    diagrama: [{ t: 'Frente de calle', k: 'control' }, { t: 'Fuente / Transformador 12V', k: 'fuente' }, { t: 'Teléfono interno', k: 'control' }, { t: 'Cerradura eléctrica', k: 'carga' }],
+    materiales: ['Frente de calle con micrófono y pulsador', 'Teléfono interior con botón destrabapuerta', 'Transformador 220V a 12Vca', 'Pestillo eléctrico'],
+    pasos: [
+      'El frente de calle envía la señal de llamada al zumbador del teléfono interno.',
+      'El botón del teléfono interno cierra el circuito de 12V que energiza la bobina del pestillo eléctrico, destrabando la puerta durante unos segundos.'
+    ],
+  },
+  {
+    id: 'timbre', categoria: 'Circuitos dedicados', nombre: 'Timbre / campanilla clásica con transformador', nivel: 'Básico',
+    diagrama: [{ t: 'Transformador 220V/12V', k: 'fuente' }, { t: 'Pulsador de calle (12V)', k: 'control' }, { t: 'Campanilla Ding-Dong', k: 'carga' }],
+    materiales: ['Transformador de timbre 220V / 8V-12V (MBTS)', 'Pulsador exterior estanco', 'Campanilla electromecánica Ding-Dong'],
+    pasos: [
+      'El transformador reduce los 220V de la red a 12V de muy baja tensión de seguridad (MBTS).',
+      'El pulsador de la calle trabaja en 12V: ante lluvia o humedad no existe ningún peligro de descarga eléctrica.',
+      'Al pulsar, el electroimán de la campanilla atrae el martillo golpeando las barras metálicas.'
+    ],
+  },
+];
+
+export function getGuia(id) {
+  return GUIAS.find(g => g.id === id) || null;
+}
