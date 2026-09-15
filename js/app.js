@@ -1736,9 +1736,9 @@ function renderGuiaDetalle() {
         <p class="page-sub">${esc(guia.categoria)} · ${esc(guia.nivel)}</p>
       </div>
     </div>
-    <div class="card">
-      ${renderCircuitDiagramSvg(guia.diagrama)}
-    </div>
+    <div class="card" style="padding: 10px; background: #0d1522; border-radius: 14px;">
+  ${renderCircuitDiagramSvg(guia.diagrama, guia.id)}
+</div>
     <div class="card">
       <div class="card-title">Materiales</div>
       <ul style="font-size:14px;color:var(--text-dim);line-height:1.9;margin:0;padding-left:20px;">
