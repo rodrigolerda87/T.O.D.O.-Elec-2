@@ -2,7 +2,7 @@
 // una vez instalada. Estrategia: cache-first con actualización en segundo
 // plano (stale-while-revalidate) para los archivos propios de la app.
 
-const CACHE_VERSION = 'todo-electricista-v4';
+const CACHE_VERSION = 'todo-electricista-v5';
 
 const PRECACHE_FILES = [
   './',
