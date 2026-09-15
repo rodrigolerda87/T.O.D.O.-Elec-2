@@ -14,6 +14,26 @@ jobs:
       - name: Descargar código del repositorio
         uses: actions/checkout@v4
 
+      # 🔄 Sincroniza guias.js, app.js y todos los cambios web a la app Android
+      - name: Sincronizar archivos web actualizados a Android
+        run: |
+          echo "Copiando archivos web más recientes a android/app/src/main/assets/www..."
+          mkdir -p android/app/src/main/assets/www
+          cp -rf js android/app/src/main/assets/www/
+          cp -rf data android/app/src/main/assets/www/
+          cp -rf assets android/app/src/main/assets/www/
+          cp -rf docs android/app/src/main/assets/www/
+          cp -rf icons android/app/src/main/assets/www/
+          cp -rf vendor android/app/src/main/assets/www/
+          cp -f index.html android/app/src/main/assets/www/index.html
+          cp -f styles.css android/app/src/main/assets/www/styles.css
+          cp -f manifest.json android/app/src/main/assets/www/manifest.json
+          cp -f service-worker.js android/app/src/main/assets/www/service-worker.js
+          # Renueva la clave de caché del Service Worker para que Android no guarde la versión vieja
+          sed -i -E "s/todo-electricista-v[0-9]+/todo-electricista-v$(date +%s)/" android/app/src/main/assets/www/service-worker.js
+          echo "Sincronización lista. Total de líneas en guias.js empaquetado:"
+          wc -l android/app/src/main/assets/www/js/guias.js
+
       - name: Configurar Java 17
         uses: actions/setup-java@v4
         with:
