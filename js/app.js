@@ -1172,10 +1172,11 @@ const INSTITUCIONALES = [
   { nombre: 'IRAM · Normas', img: './assets/branding/iram-banner.png', url: 'https://www.iram.org.ar/' },
 ];
 const COMERCIOS_LOCALES = [
-  { nombre: 'Don Roberto', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSU2o5Nr9m3oile5nXuXH_kpDXHB2byoW8NeQ49W-TORk5Uch0bywbA6zs&s=10' },
-  { nombre: 'Electroavenida', img: 'https://media.licdn.com/dms/image/v2/D4D0BAQGjyYo--Yh0OA/company-logo_200_200/company-logo_200_200/0/1684328245032?e=2147483647&v=beta&t=C718asNiywZ1hYdqRKdpx6sCVVMI_BOJp-uJC2mU0zE' },
-  { nombre: 'Distribuidora Baudracco', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi8Bq64vQ2bBdFY8bBe-3hpyN4umwh4C24HU0l99NB_I-NCtCtEhZPNbqo&s=10' },
-  { nombre: 'Mecan', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrMrLVXt1bVQI8d03lFQGaqRiqfkoXtCw5Y7J3S5H1txoWckAlx9lWygr6&s=10' },
+  { nombre: 'Don Roberto', img: './assets/branding/don-roberto.jpg' },
+  { nombre: 'Electroavenida', img: './assets/branding/electroavenida.jpg' },
+  { nombre: 'Distribuidora Baudracco', img: './assets/branding/baudracco.jpg' },
+  { nombre: 'Mecan', img: './assets/branding/mecan.jpg' },
+  { nombre: 'Oficio-ya', img: './assets/branding/oficio-ya.jpg' },
 ];
 
 function acSlide(item, i, linked, compact) {
