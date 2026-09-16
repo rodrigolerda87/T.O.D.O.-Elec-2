@@ -36,11 +36,11 @@
   --text: #182233;
   --text-dim: #5c6675;
   --text-faint: #8b93a3;
-  --amber: #f5a623;
-  --amber-hi: #ffc24d;
-  --amber-dark: #a86a12;
-  --amber-text: #96600a;
-  --amber-soft: rgba(245, 166, 35, 0.14);
+  --amber: #0d80ef;
+  --amber-hi: #38d0f7;
+  --amber-dark: #0043a8;
+  --amber-text: #0055b8;
+  --amber-soft: rgba(13, 128, 239, 0.14);
   --danger: #d33d3d;
   --danger-soft: rgba(211, 61, 61, 0.10);
   --success: #1f9d63;
