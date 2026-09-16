@@ -164,7 +164,7 @@ a { color: var(--amber); }
 .btn svg { width: 15px; height: 15px; }
 .btn:hover { background: var(--surface-2); border-color: var(--surface-3); }
 .btn:active { transform: scale(.98); }
-.btn-primary { background: linear-gradient(180deg, var(--amber-hi), var(--amber)); color: #241503; border-color: transparent; }
+.btn-primary { background: linear-gradient(180deg, var(--amber-hi), var(--amber)); color: #0a1626; border-color: transparent; }
 .btn-primary:hover { filter: brightness(1.05); background: linear-gradient(180deg, var(--amber-hi), var(--amber)); }
 .btn-ghost { background: transparent; border-color: transparent; color: var(--text-dim); }
 .btn-ghost:hover { background: var(--surface); color: var(--text); }
