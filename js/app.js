@@ -1172,11 +1172,11 @@ const INSTITUCIONALES = [
   { nombre: 'IRAM · Normas', img: './assets/branding/iram-banner.png', url: 'https://www.iram.org.ar/' },
 ];
 const COMERCIOS_LOCALES = [
-  { nombre: 'Don Roberto', img: './assets/branding/don-roberto.jpg' },
-  { nombre: 'Electroavenida', img: './assets/branding/electroavenida.jpg' },
-  { nombre: 'Distribuidora Baudracco', img: './assets/branding/baudracco.jpg' },
-  { nombre: 'Mecan', img: './assets/branding/mecan.jpg' },
-  { nombre: 'Oficio-ya', img: './assets/branding/oficio-ya.jpg' },
+  { nombre: 'Don Roberto', img: './assets/branding/don-roberto.jpeg' },
+  { nombre: 'Electroavenida', img: './assets/branding/electroavenida.jpeg' },
+  { nombre: 'Distribuidora Baudracco', img: './assets/branding/baudracco.jpeg' },
+  { nombre: 'Mecan', img: './assets/branding/mecan.jpeg' },
+  { nombre: 'Oficio-ya', img: './assets/branding/oficio-ya.jpeg' },
 ];
 
 function acSlide(item, i, linked, compact) {
