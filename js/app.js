@@ -954,7 +954,7 @@ function renderCatalog() {
   el.querySelector('#pdf-file').onchange = handlePdfUpload;
   el.querySelector('#btn-check-now').onclick = async () => {
     await refreshRemoteCheck();
-    document.querySelector('#view-catalog .page-sub').textContent = catalogSubtitle();
+   document.querySelector('#view-catalog .page-sub').innerHTML = catalogSubtitle();
     if (state.remoteCheck && state.remoteCheck.diffs && state.remoteCheck.diffs.length) {
       openPdfDiffModal(state.remoteCheck, { fromRemote: true });
     } else if (state.remoteCheck) {
