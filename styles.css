@@ -412,8 +412,8 @@ tr:last-child td { border-bottom: none; }
 /* ---------- Banner de actualización de precios ---------- */
 .update-banner {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  background: linear-gradient(180deg, rgba(245,166,35,.14), rgba(245,166,35,.06));
-  border: 1px solid rgba(245,166,35,.35);
+ background: linear-gradient(180deg, rgba(13,128,239,.14), rgba(13,128,239,.06));
+  border: 1px solid rgba(13,128,239,.35);
   border-radius: 12px;
   padding: 12px 16px;
   margin-bottom: 18px;
