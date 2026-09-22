@@ -1,5 +1,6 @@
 // app.js — lógica principal de la app (SPA sin frameworks).
 
+import { SIMBOLOS_PLANOS, SIMBOLOS_UNIFILARES } from './simbolosData.js';
 import { kvGet, kvSet, listAll, itemGet, itemPut, itemDelete, uid } from './db.js';
 import {
   getCatalog, saveCatalog, flatItems, searchItems, findItem,
