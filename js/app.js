@@ -1696,38 +1696,166 @@ function renderSensibilidadDiferencial() {
 // ---------------------------------------------------------------------
 // VIEW: Guías
 // ---------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// VIEW: Guías (con Subsección de Simbología dividida en Plano y Unifilar)
+// ---------------------------------------------------------------------
 function renderGuiasLista() {
   const el = document.getElementById('view-guias');
-  const filtro = state.guiaFiltro;
-  const lista = filtro === 'todas' ? GUIAS : GUIAS.filter(g => g.categoria === filtro);
+  const subseccion = state.guiasSubseccion || 'circuitos';
 
   el.innerHTML = `
     <div class="page-head">
-      <div><h1 class="page-title">Guías</h1><p class="page-sub">Circuitos comunes: diagrama y paso a paso.</p></div>
+      <div>
+        <h1 class="page-title">Guías</h1>
+        <p class="page-sub">Circuitos comunes y simbología técnica normalizada.</p>
+      </div>
     </div>
-    <div class="subtabs">
-      <button type="button" class="subtab-btn ${filtro === 'todas' ? 'active' : ''}" data-filtro="todas">Todas</button>
-      ${CATEGORIAS_GUIA.map(c => `<button type="button" class="subtab-btn ${filtro === c ? 'active' : ''}" data-filtro="${esc(c)}">${esc(c)}</button>`).join('')}
+
+    <!-- Pestañas principales de Guías: Circuitos vs Simbología -->
+    <div class="subtabs" style="margin-bottom: 16px;">
+      <button type="button" class="subtab-btn ${subseccion === 'circuitos' ? 'active' : ''}" data-subseccion="circuitos">
+        Circuitos
+      </button>
+      <button type="button" class="subtab-btn ${subseccion === 'simbologia' ? 'active' : ''}" data-subseccion="simbologia">
+        Simbología
+      </button>
     </div>
-    <div id="guias-list"></div>
+
+    <div id="guias-content-host"></div>
   `;
-  el.querySelectorAll('[data-filtro]').forEach(b => {
-    b.onclick = () => { state.guiaFiltro = b.dataset.filtro; renderGuiasLista(); };
+
+  // Cambiar entre Circuitos y Simbología
+  el.querySelectorAll('[data-subseccion]').forEach(btn => {
+    btn.onclick = () => {
+      state.guiasSubseccion = btn.dataset.subseccion;
+      renderGuiasLista();
+    };
   });
 
-  const host = document.getElementById('guias-list');
-  host.innerHTML = lista.map(g => `
-    <div class="list-row" data-id="${g.id}">
-      <div>
-        <div class="title">${esc(g.nombre)}</div>
-        <div class="meta">${esc(g.categoria)} · ${esc(g.nivel)}</div>
+  const host = document.getElementById('guias-content-host');
+
+  if (subseccion === 'circuitos') {
+    // 1. Muestra la lista clásica de tus guías de circuitos
+    const filtro = state.guiaFiltro || 'todas';
+    const lista = filtro === 'todas' ? GUIAS : GUIAS.filter(g => g.categoria === filtro);
+
+    host.innerHTML = `
+      <div class="subtabs">
+        <button type="button" class="subtab-btn ${filtro === 'todas' ? 'active' : ''}" data-filtro="todas">Todas</button>
+        ${CATEGORIAS_GUIA.map(c => `<button type="button" class="subtab-btn ${filtro === c ? 'active' : ''}" data-filtro="${esc(c)}">${esc(c)}</button>`).join('')}
       </div>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--text-dim);flex:none;"><path d="m9 18 6-6-6-6"/></svg>
-    </div>
-  `).join('');
-  host.querySelectorAll('.list-row').forEach(row => {
-    row.onclick = () => { state.guiaActualId = row.dataset.id; showView('guia-detalle'); };
-  });
+      <div id="guias-list"></div>
+    `;
+
+    host.querySelectorAll('[data-filtro]').forEach(b => {
+      b.onclick = () => { state.guiaFiltro = b.dataset.filtro; renderGuiasLista(); };
+    });
+
+    const listEl = document.getElementById('guias-list');
+    listEl.innerHTML = lista.map(g => `
+      <div class="list-row" data-id="${g.id}">
+        <div>
+          <div class="title">${esc(g.nombre)}</div>
+          <div class="meta">${esc(g.categoria)} · ${esc(g.nivel)}</div>
+        </div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--text-dim);flex:none;"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.list-row').forEach(row => {
+      row.onclick = () => { state.guiaActualId = row.dataset.id; showView('guia-detalle'); };
+    });
+
+  } else {
+    // 2. Muestra la subsección Simbología (Planos Eléctricos y Esquemas Unifilares)
+    const tab = state.simbologiaTab || 'plano';
+    const query = (state.simbologiaBuscar || '').toLowerCase();
+    const coleccion = tab === 'plano' ? SIMBOLOS_PLANOS : SIMBOLOS_UNIFILARES;
+
+    const filtrados = coleccion.filter(s =>
+      s.nombre.toLowerCase().includes(query) ||
+      (s.descripcion && s.descripcion.toLowerCase().includes(query)) ||
+      (s.categoria && s.categoria.toLowerCase().includes(query)) ||
+      `#${s.numero}`.includes(query)
+    );
+
+    host.innerHTML = `
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;">
+        <div class="subtabs" style="margin-bottom:0;">
+          <button type="button" class="subtab-btn ${tab === 'plano' ? 'active' : ''}" data-sim-tab="plano">
+            Planos Eléctricos (${SIMBOLOS_PLANOS.length})
+          </button>
+          <button type="button" class="subtab-btn ${tab === 'unifilar' ? 'active' : ''}" data-sim-tab="unifilar">
+            Esquemas Unifilares (${SIMBOLOS_UNIFILARES.length})
+          </button>
+        </div>
+
+        <div style="min-width: 200px; flex: 1; max-width: 300px;">
+          <input 
+            type="text" 
+            id="input-buscar-simbolo" 
+            placeholder="Buscar símbolo..." 
+            value="${esc(state.simbologiaBuscar || '')}"
+            style="width:100%; padding:7px 12px; font-size:12px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--text);"
+          />
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap:12px;">
+        ${filtrados.map(s => `
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; display:flex; flex-direction:column;">
+            <div style="padding:6px 10px; background:var(--surface-2); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:bold; color:var(--amber);">#${String(s.numero).padStart(2, '0')}</span>
+              <span style="font-size:10px; color:var(--text-dim); font-weight:500;">${esc(s.categoria)}</span>
+            </div>
+            
+            <div style="background:#f8fafc; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 10px 10px; padding:14px; display:flex; align-items:center; justify-content:center; min-height:120px; border-bottom:1px solid var(--border);">
+              <svg viewBox="0 0 100 100" style="width:80px; height:80px;" role="img">
+                ${s.svg}
+              </svg>
+            </div>
+
+            <div style="padding:10px; flex:1; display:flex; flex-direction:column;">
+              <div style="font-family:'Space Grotesk',sans-serif; font-size:12.5px; font-weight:bold; color:var(--text); line-height:1.3; margin-bottom:5px;">
+                ${esc(s.nombre)}
+              </div>
+              <p style="font-size:11px; color:var(--text-dim); margin:0; line-height:1.4;">
+                ${esc(s.descripcion || '')}
+              </p>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      ${filtrados.length === 0 ? `
+        <div style="text-align:center; padding:24px; color:var(--text-dim); font-size:13px;">
+          No se encontraron símbolos.
+        </div>
+      ` : ''}
+    `;
+
+    // Botones para alternar Plano vs Unifilar
+    host.querySelectorAll('[data-sim-tab]').forEach(b => {
+      b.onclick = () => {
+        state.simbologiaTab = b.dataset.simTab;
+        renderGuiasLista();
+      };
+    });
+
+    // Campo de búsqueda en vivo
+    const inputBuscar = document.getElementById('input-buscar-simbolo');
+    if (inputBuscar) {
+      inputBuscar.oninput = (e) => {
+        state.simbologiaBuscar = e.target.value;
+        renderGuiasLista();
+        const nuevoInput = document.getElementById('input-buscar-simbolo');
+        if (nuevoInput) {
+          nuevoInput.focus();
+          nuevoInput.setSelectionRange(nuevoInput.value.length, nuevoInput.value.length);
+        }
+      };
+    }
+  }
 }
 
 function renderGuiaDetalle() {
