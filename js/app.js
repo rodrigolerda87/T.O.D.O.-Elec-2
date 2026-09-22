@@ -59,6 +59,9 @@ const state = {
   // Guías
   guiaActualId: null,
   guiaFiltro: 'todas',
+  guiasSubseccion: 'circuitos', // 'circuitos' o 'simbologia'
+  simbologiaTab: 'plano',       // 'plano' o 'unifilar'
+  simbologiaBuscar: '',
 
   // Cálculos: Grado de electrificación — 'lista' o 'editor'
   electrifSubview: 'lista',
