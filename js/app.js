@@ -1241,11 +1241,10 @@ function initAutoCarousel(id, intervalMs = 4500) {
 }
 
 const HOME_ACCESOS = [
-  { label: 'Inicio', img: './assets/branding/nav-inicio.png', view: 'home' },
-  { label: 'Presupuesto', img: './assets/branding/nav-presupuesto.png', view: 'builder' },
-  { label: 'Cálculos', img: './assets/branding/nav-calculos.png', view: 'calc-caida' },
-  { label: 'Mi Negocio', img: './assets/branding/nav-mi-negocio.png', view: 'business' },
-  { label: 'Guías', img: './assets/branding/nav-guias.png', view: 'guias' },
+  { label: 'Presupuestos', sub: 'Crear y Cotizar', img: './assets/branding/nav-presupuesto.png', view: 'builder' },
+  { label: 'Cálculos', sub: 'Todo para acelerar procedimientos', img: './assets/branding/nav-calculos.png', view: 'calc-caida' },
+  { label: 'Mi Negocio', sub: 'Datos personales y de Clientes', img: './assets/branding/nav-mi-negocio.png', view: 'business' },
+  { label: 'Guías', sub: 'Ayuda a tu Memoria', img: './assets/branding/nav-guias.png', view: 'guias' },
 ];
 
 function renderHome() {
@@ -1260,8 +1259,17 @@ function renderHome() {
     <div class="home-grid">
       ${HOME_ACCESOS.map(a => `
         <button class="home-grid-item" data-goto="${a.view}">
-          <img src="${a.img}" alt="">
-          <span>${esc(a.label)}</span>
+          <div class="home-item-accent"></div>
+          <div class="home-item-icon-box">
+            <img src="${a.img}" alt="${esc(a.label)}">
+          </div>
+          <div class="home-item-info">
+            <div class="home-item-header">
+              <span class="home-item-title">${esc(a.label)}</span>
+              <span class="home-item-arrow">→</span>
+            </div>
+            <span class="home-item-sub">${esc(a.sub)}</span>
+          </div>
         </button>
       `).join('')}
     </div>
