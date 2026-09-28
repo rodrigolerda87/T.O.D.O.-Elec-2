@@ -148,5 +148,26 @@
 
 <script src="./vendor/jspdf.umd.min.js"></script>
 <script type="module" src="./js/app.js"></script>
+  <script>
+    (function() {
+      const overlay = document.getElementById('app-intro-overlay');
+      const video = document.getElementById('intro-video');
+      if (!overlay || !video) return;
+
+      const finishIntro = function() {
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+        setTimeout(() => {
+          overlay.remove();
+        }, 400);
+      };
+
+      // Se oculta automáticamente cuando termina el video a los 3 segundos
+      video.addEventListener('ended', finishIntro);
+
+      // Respaldo de seguridad: si el navegador demora en cargar el video, se oculta a los 3.4s
+      setTimeout(finishIntro, 3400);
+    })();
+  </script>
 </body>
 </html>
