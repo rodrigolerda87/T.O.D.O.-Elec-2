@@ -13,15 +13,17 @@
 </head>
 <body>
 
-  <!-- INTRO SPLASH VIDEO T.O.D.O. -->
-  <div id="app-intro-overlay" style="position:fixed;inset:0;background-color:#070D1E;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity 0.4s ease, visibility 0.4s ease;">
+ <!-- INTRO SPLASH VIDEO T.O.D.O. ADAPTADO A TELÉFONOS -->
+  <div id="app-intro-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;background-color:#070D1E;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity 0.4s ease;">
     <video 
       id="intro-video" 
-      src="./assets/TODO_Electricista_Intro_3s.mp4" 
+      src="./assets/branding/TODO_Electricista_Intro_3s.mp4" 
       autoplay 
       muted 
       playsinline 
-      style="width:100%;height:100%;object-fit:contain;background-color:#070D1E;">
+      webkit-playsinline 
+      preload="auto"
+      style="width:100%;height:100%;max-width:100%;max-height:100dvh;object-fit:contain;background-color:#070D1E;display:block;">
     </video>
   </div>
 <div class="app-shell">
@@ -167,6 +169,41 @@
 
       // Respaldo de seguridad: si el navegador demora en cargar el video, se oculta a los 3.4s
       setTimeout(finishIntro, 3400);
+    })();
+  <script>
+    (function() {
+      const overlay = document.getElementById('app-intro-overlay');
+      const video = document.getElementById('intro-video');
+      if (!overlay || !video) return;
+
+      let isFinished = false;
+      const finishIntro = function() {
+        if (isFinished) return;
+        isFinished = true;
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+        setTimeout(() => {
+          overlay.remove();
+        }, 400);
+      };
+
+      // Forzar reproducción inmediata en celulares
+      video.muted = true;
+      video.defaultMuted = true;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Si el navegador bloquea autoplay, continúa a la app sin trabarse
+          setTimeout(finishIntro, 500);
+        });
+      }
+
+      // Al terminar los 3 segundos del video
+      video.addEventListener('ended', finishIntro);
+      video.addEventListener('error', finishIntro);
+
+      // Tiempo límite de seguridad (3.2 segundos)
+      setTimeout(finishIntro, 3200);
     })();
   </script>
 </body>
