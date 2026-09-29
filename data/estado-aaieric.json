@@ -1,5 +1,5 @@
 {
-  "verificadoEn": "2026-09-28T19:53:49.744Z",
+  "verificadoEn": "2026-09-29T18:22:17.372Z",
   "fuente": "https://aaieric.org.ar/costos-mano-de-obra",
   "periodoDetectado": "Septiembre 2026",
   "precios": {
@@ -17,8 +17,6 @@
     "amurado-ladrillo-hueco-metro": 15179,
     "amurado-vista-metal-pvc": 51774,
     "pase-viga-boca": 60119,
-    "subterraneo-tierra": 56341,
-    "subterraneo-piso": 60119,
     "subterraneo-caja-tierra": 61873,
     "subterraneo-caja-piso": 66069,
     "cableado-opcion1": 27703,
@@ -102,6 +100,8 @@
     "grupo-3-5kva": 281522
   },
   "sinCoincidencia": [
+    "subterraneo-tierra",
+    "subterraneo-piso",
     "aplique-simple"
   ],
   "huboError": false,
